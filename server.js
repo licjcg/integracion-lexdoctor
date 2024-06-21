@@ -1611,6 +1611,174 @@ app.get('/api/nodo', (req, res) => {
   });
 });
 
+// Rutas para Clientes (SUJE)
+app.get('/api/clientes', (req, res) => {
+  Firebird.attach(options, (err, db) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send('Error al conectar con la base de datos');
+      return;
+    }
+
+    db.query('SELECT * FROM SUJE', (err, result) => {
+      if (err) {
+        console.error('Error al ejecutar la consulta:', err);
+        res.status(500).send('Error al ejecutar la consulta');
+        return;
+      }
+
+      res.json(result.map(row => ({
+        suje: row.SUJE.trim(),
+        pers: row.PERS.trim(),
+        rela: row.RELA.trim(),
+        clie: row.CLIE.trim(),
+        opon: row.OPON.trim(),
+        terc: row.TERC.trim(),
+        gest: row.GEST.trim(),
+        abog: row.ABOG.trim(),
+        clas: row.CLAS.trim(),
+        apel: row.APEL.trim(),
+        nomb: row.NOMB.trim(),
+        empr: row.EMPR.trim(),
+        obse: row.OBSE.trim(),
+        fnac: row.FNAC.trim(),
+        pnac: row.PNAC.trim(),
+        docu: row.DOCU.trim(),
+        eciv: row.ECIV.trim(),
+        padr: row.PADR.trim(),
+        madr: row.MADR.trim(),
+        cony: row.CONY.trim(),
+        dire: row.DIRE.trim(),
+        ciud: row.CIUD.trim(),
+        cpos: row.CPOS.trim(),
+        prov: row.PROV.trim(),
+        noti: row.NOTI.trim(),
+        tele: row.TELE.trim(),
+        tmov: row.TMOV.trim(),
+        fax: row.FAX.trim(),
+        emai: row.EMAI.trim(),
+        web: row.WEB.trim(),
+        prof: row.PROF.trim(),
+        itr1: row.ITR1.trim(),
+        itr2: row.ITR2.trim(),
+        itr3: row.ITR3.trim(),
+        aux1: row.AUX1.trim(),
+        aux2: row.AUX2.trim(),
+        aux3: row.AUX3.trim(),
+        aux4: row.AUX4.trim(),
+        aux5: row.AUX5.trim(),
+        aux6: row.AUX6.trim(),
+        aux7: row.AUX7.trim(),
+        aux8: row.AUX8.trim(),
+        usua: row.USUA.trim(),
+        abo1: row.ABO1.trim(),
+        cia1: row.CIA1.trim(),
+        abo2: row.ABO2.trim(),
+        cia2: row.CIA2.trim(),
+        atel: row.ATEL.trim(),
+        aema: row.AEMA.trim(),
+        doco: row.DOCO.trim(),
+        text: row.TEXT.trim(),
+        edit: row.EDIT.trim()
+      })));
+      db.detach();
+    });
+  });
+});
+
+app.post('/api/clientes', (req, res) => {
+  const { suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, tele, fax, emai, tmov, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit } = req.body;
+  Firebird.attach(options, (err, db) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send('Error al conectar con la base de datos');
+      return;
+    }
+
+    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, TELE, FAX, EMAI, TMOV, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, tele, fax, emai, tmov, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit], (err, result) => {
+      if (err) {
+        console.error('Error al ejecutar la consulta:', err);
+        res.status(500).send('Error al ejecutar la consulta');
+        return;
+      }
+
+      res.status(201).send('Cliente creado exitosamente');
+      db.detach();
+    });
+  });
+});
+
+// Rutas para Casos (PROC)
+app.get('/api/casos', (req, res) => {
+  Firebird.attach(options, (err, db) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send('Error al conectar con la base de datos');
+      return;
+    }
+
+    db.query('SELECT * FROM PROC', (err, result) => {
+      if (err) {
+        console.error('Error al ejecutar la consulta:', err);
+        res.status(500).send('Error al ejecutar la consulta');
+        return;
+      }
+
+      res.json(result.map(row => ({
+        proc: row.PROC.trim(),
+        grup: row.GRUP.trim(),
+        tpro: row.TPRO.trim(),
+        acto: row.ACTO.trim(),
+        dema: row.DEMA.trim(),
+        obse: row.OBSE.trim(),
+        inic: row.INIC.trim(),
+        fina: row.FINA.trim(),
+        doco: row.DOCO.trim(),
+        ojud: row.OJUD.trim(),
+        inst: row.INST.trim(),
+        exp1: row.EXP1.trim(),
+        exp2: row.EXP2.trim(),
+        exp3: row.EXP3.trim(),
+        exp4: row.EXP4.trim(),
+        supe: row.SUPE.trim(),
+        miem: row.MIEM.trim(),
+        aux1: row.AUX1.trim(),
+        aux2: row.AUX2.trim(),
+        aux3: row.AUX3.trim(),
+        aux4: row.AUX4.trim(),
+        aux5: row.AUX5.trim(),
+        aux6: row.AUX6.trim(),
+        aux7: row.AUX7.trim(),
+        aux8: row.AUX8.trim(),
+        edit: row.EDIT.trim()
+      })));
+      db.detach();
+    });
+  });
+});
+
+app.post('/api/casos', (req, res) => {
+  const { proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit } = req.body;
+  Firebird.attach(options, (err, db) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send('Error al conectar con la base de datos');
+      return;
+    }
+
+    db.query('INSERT INTO PROC (PROC, GRUP, TPRO, ACTO, DEMA, OBSE, INIC, FINA, DOCO, OJUD, INST, EXP1, EXP2, EXP3, EXP4, SUPE, MIEM, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit], (err, result) => {
+      if (err) {
+        console.error('Error al ejecutar la consulta:', err);
+        res.status(500).send('Error al ejecutar la consulta');
+        return;
+      }
+
+      res.status(201).send('Caso creado exitosamente');
+      db.detach();
+    });
+  });
+});
+
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
