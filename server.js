@@ -1611,6 +1611,98 @@ app.get('/api/nodo', (req, res) => {
   });
 });
 
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const Firebird = require('node-firebird');
+const app = express();
+
+const options = {
+  host: 'localhost',
+  port: 3050,
+  database: 'C:/LEX11E/DATOS/LEX11E.fdb',
+  user: 'SYSDBA',
+  password: 'masterkey',
+  role: null,
+  pageSize: 4096,
+  charset: 'UTF8',
+  sessionTimeZone: 'UTC'
+};
+
+app.use(cors());
+app.use(bodyParser.json());
+
+// Rutas para Casos (PROC)
+app.get('/api/casos', (req, res) => {
+  Firebird.attach(options, (err, db) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send('Error al conectar con la base de datos');
+      return;
+    }
+
+    db.query('SELECT * FROM PROC', (err, result) => {
+      if (err) {
+        console.error('Error al ejecutar la consulta:', err);
+        res.status(500).send('Error al ejecutar la consulta');
+        return;
+      }
+
+      res.json(result.map(row => ({
+        proc: row.PROC.trim(),
+        grup: row.GRUP.trim(),
+        tpro: row.TPRO.trim(),
+        acto: row.ACTO.trim(),
+        dema: row.DEMA.trim(),
+        obse: row.OBSE.trim(),
+        inic: row.INIC.trim(),
+        fina: row.FINA.trim(),
+        doco: row.DOCO.trim(),
+        ojud: row.OJUD.trim(),
+        inst: row.INST.trim(),
+        exp1: row.EXP1.trim(),
+        exp2: row.EXP2.trim(),
+        exp3: row.EXP3.trim(),
+        exp4: row.EXP4.trim(),
+        supe: row.SUPE.trim(),
+        miem: row.MIEM.trim(),
+        aux1: row.AUX1.trim(),
+        aux2: row.AUX2.trim(),
+        aux3: row.AUX3.trim(),
+        aux4: row.AUX4.trim(),
+        aux5: row.AUX5.trim(),
+        aux6: row.AUX6.trim(),
+        aux7: row.AUX7.trim(),
+        aux8: row.AUX8.trim(),
+        edit: row.EDIT.trim()
+      })));
+      db.detach();
+    });
+  });
+});
+
+app.post('/api/casos', (req, res) => {
+  const { proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit } = req.body;
+  Firebird.attach(options, (err, db) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send('Error al conectar con la base de datos');
+      return;
+    }
+
+    db.query('INSERT INTO PROC (PROC, GRUP, TPRO, ACTO, DEMA, OBSE, INIC, FINA, DOCO, OJUD, INST, EXP1, EXP2, EXP3, EXP4, SUPE, MIEM, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit], (err, result) => {
+      if (err) {
+        console.error('Error al ejecutar la consulta:', err);
+        res.status(500).send('Error al ejecutar la consulta');
+        return;
+      }
+
+      res.send('Caso agregado exitosamente');
+      db.detach();
+    });
+  });
+});
+
 // Rutas para Clientes (SUJE)
 app.get('/api/clientes', (req, res) => {
   Firebird.attach(options, (err, db) => {
@@ -1687,7 +1779,7 @@ app.get('/api/clientes', (req, res) => {
 });
 
 app.post('/api/clientes', (req, res) => {
-  const { suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, tele, fax, emai, tmov, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit } = req.body;
+  const { suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, noti, tele, tmov, fax, emai, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit } = req.body;
   Firebird.attach(options, (err, db) => {
     if (err) {
       console.error('Error al conectar con la base de datos:', err);
@@ -1695,21 +1787,7 @@ app.post('/api/clientes', (req, res) => {
       return;
     }
 
-    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, TELE, FAX, EMAI, TMOV, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, tele, fax, emai, tmov, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit], (err, result) => {
-      if (err) {
-        console.error('Error al ejecutar la consulta:', err);
-        res.status(500).send('Error al ejecutar la consulta');
-        return;
-      }
-
-      res.status(201).send('Cliente creado exitosamente');
-      db.detach();
-    });
-  });
-});
-
-// Rutas para Casos (PROC)
-app.get('/api/casos', (req, res) => {
+    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, NOTI, TELE, TMOV, FAX, EMAI, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel,Aquí tienes la última parte del código que faltaba:
   Firebird.attach(options, (err, db) => {
     if (err) {
       console.error('Error al conectar con la base de datos:', err);
@@ -1717,68 +1795,18 @@ app.get('/api/casos', (req, res) => {
       return;
     }
 
-    db.query('SELECT * FROM PROC', (err, result) => {
+    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, NOTI, TELE, TMOV, FAX, EMAI, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, noti, tele, tmov, fax, emai, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit], (err, result) => {
       if (err) {
         console.error('Error al ejecutar la consulta:', err);
         res.status(500).send('Error al ejecutar la consulta');
         return;
       }
 
-      res.json(result.map(row => ({
-        proc: row.PROC.trim(),
-        grup: row.GRUP.trim(),
-        tpro: row.TPRO.trim(),
-        acto: row.ACTO.trim(),
-        dema: row.DEMA.trim(),
-        obse: row.OBSE.trim(),
-        inic: row.INIC.trim(),
-        fina: row.FINA.trim(),
-        doco: row.DOCO.trim(),
-        ojud: row.OJUD.trim(),
-        inst: row.INST.trim(),
-        exp1: row.EXP1.trim(),
-        exp2: row.EXP2.trim(),
-        exp3: row.EXP3.trim(),
-        exp4: row.EXP4.trim(),
-        supe: row.SUPE.trim(),
-        miem: row.MIEM.trim(),
-        aux1: row.AUX1.trim(),
-        aux2: row.AUX2.trim(),
-        aux3: row.AUX3.trim(),
-        aux4: row.AUX4.trim(),
-        aux5: row.AUX5.trim(),
-        aux6: row.AUX6.trim(),
-        aux7: row.AUX7.trim(),
-        aux8: row.AUX8.trim(),
-        edit: row.EDIT.trim()
-      })));
+      res.send('Cliente agregado exitosamente');
       db.detach();
     });
   });
 });
-
-app.post('/api/casos', (req, res) => {
-  const { proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit } = req.body;
-  Firebird.attach(options, (err, db) => {
-    if (err) {
-      console.error('Error al conectar con la base de datos:', err);
-      res.status(500).send('Error al conectar con la base de datos');
-      return;
-    }
-
-    db.query('INSERT INTO PROC (PROC, GRUP, TPRO, ACTO, DEMA, OBSE, INIC, FINA, DOCO, OJUD, INST, EXP1, EXP2, EXP3, EXP4, SUPE, MIEM, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit], (err, result) => {
-      if (err) {
-        console.error('Error al ejecutar la consulta:', err);
-        res.status(500).send('Error al ejecutar la consulta');
-        return;
-      }
-
-      res.status(201).send('Caso creado exitosamente');
-      db.detach();
-    });
-  });
-});
-
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
