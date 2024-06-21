@@ -1611,27 +1611,6 @@ app.get('/api/nodo', (req, res) => {
   });
 });
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const Firebird = require('node-firebird');
-const app = express();
-
-const options = {
-  host: 'localhost',
-  port: 3050,
-  database: 'C:/LEX11E/DATOS/LEX11E.fdb',
-  user: 'SYSDBA',
-  password: 'masterkey',
-  role: null,
-  pageSize: 4096,
-  charset: 'UTF8',
-  sessionTimeZone: 'UTC'
-};
-
-app.use(cors());
-app.use(bodyParser.json());
-
 // Rutas para Casos (PROC)
 app.get('/api/casos', (req, res) => {
   Firebird.attach(options, (err, db) => {
@@ -1690,14 +1669,15 @@ app.post('/api/casos', (req, res) => {
       return;
     }
 
-    db.query('INSERT INTO PROC (PROC, GRUP, TPRO, ACTO, DEMA, OBSE, INIC, FINA, DOCO, OJUD, INST, EXP1, EXP2, EXP3, EXP4, SUPE, MIEM, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit], (err, result) => {
+    db.query('INSERT INTO PROC (PROC, GRUP, TPRO, ACTO, DEMA, OBSE, INIC, FINA, DOCO, OJUD, INST, EXP1, EXP2, EXP3, EXP4, SUPE, MIEM, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+    [proc, grup, tpro, acto, dema, obse, inic, fina, doco, ojud, inst, exp1, exp2, exp3, exp4, supe, miem, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, edit], (err, result) => {
       if (err) {
         console.error('Error al ejecutar la consulta:', err);
         res.status(500).send('Error al ejecutar la consulta');
         return;
       }
 
-      res.send('Caso agregado exitosamente');
+      res.status(201).send('Caso creado exitosamente');
       db.detach();
     });
   });
@@ -1744,10 +1724,10 @@ app.get('/api/clientes', (req, res) => {
         ciud: row.CIUD.trim(),
         cpos: row.CPOS.trim(),
         prov: row.PROV.trim(),
-        noti: row.NOTI.trim(),
         tele: row.TELE.trim(),
-        tmov: row.TMOV.trim(),
         fax: row.FAX.trim(),
+        noti: row.NOTI.trim(),
+        tmov: row.TMOV.trim(),
         emai: row.EMAI.trim(),
         web: row.WEB.trim(),
         prof: row.PROF.trim(),
@@ -1779,7 +1759,7 @@ app.get('/api/clientes', (req, res) => {
 });
 
 app.post('/api/clientes', (req, res) => {
-  const { suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, noti, tele, tmov, fax, emai, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit } = req.body;
+  const { suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, tele, fax, noti, tmov, emai, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit } = req.body;
   Firebird.attach(options, (err, db) => {
     if (err) {
       console.error('Error al conectar con la base de datos:', err);
@@ -1787,22 +1767,15 @@ app.post('/api/clientes', (req, res) => {
       return;
     }
 
-    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, NOTI, TELE, TMOV, FAX, EMAI, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel,Aquí tienes la última parte del código que faltaba:
-  Firebird.attach(options, (err, db) => {
-    if (err) {
-      console.error('Error al conectar con la base de datos:', err);
-      res.status(500).send('Error al conectar con la base de datos');
-      return;
-    }
-
-    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, NOTI, TELE, TMOV, FAX, EMAI, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, noti, tele, tmov, fax, emai, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit], (err, result) => {
+    db.query('INSERT INTO SUJE (SUJE, PERS, RELA, CLIE, OPON, TERC, GEST, ABOG, CLAS, APEL, NOMB, EMPR, OBSE, FNAC, PNAC, DOCU, ECIV, PADR, MADR, CONY, DIRE, CIUD, CPOS, PROV, TELE, FAX, NOTI, TMOV, EMAI, WEB, PROF, ITR1, ITR2, ITR3, AUX1, AUX2, AUX3, AUX4, AUX5, AUX6, AUX7, AUX8, USUA, ABO1, CIA1, ABO2, CIA2, ATEL, AEMA, DOCO, TEXT, EDIT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+    [suje, pers, rela, clie, opon, terc, gest, abog, clas, apel, nomb, empr, obse, fnac, pnac, docu, eciv, padr, madr, cony, dire, ciud, cpos, prov, tele, fax, noti, tmov, emai, web, prof, itr1, itr2, itr3, aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, usua, abo1, cia1, abo2, cia2, atel, aema, doco, text, edit], (err, result) => {
       if (err) {
         console.error('Error al ejecutar la consulta:', err);
         res.status(500).send('Error al ejecutar la consulta');
         return;
       }
 
-      res.send('Cliente agregado exitosamente');
+      res.status(201).send('Cliente creado exitosamente');
       db.detach();
     });
   });
